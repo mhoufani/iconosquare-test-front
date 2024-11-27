@@ -1,6 +1,6 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, Fragment } from 'react';
 import cs from 'classnames';
-import { useLiveChartContext } from '../utils/hooks/useLiveChartContext';
+import { useLiveChartContext, nbViewItems } from '../utils/hooks/useLiveChartContext';
 import useKeyboard from '../utils/hooks/useKeyboard';
 import useClickOutside from "../utils/hooks/useClickOutside";
 
@@ -8,7 +8,7 @@ const LiveTable = () => {
     const { data, dispatch } = useLiveChartContext();
     const InputRef = useRef(null);
     const nbTotalEvents = data?.events?.length
-    const eventsFiltered = data.events.slice(nbTotalEvents - 20 - data.navIdx, nbTotalEvents - data.navIdx);
+    const eventsFiltered = data.events.slice(nbTotalEvents - nbViewItems - data.navIdx, nbTotalEvents - data.navIdx);
 
     const fnEditionSave = useCallback(() => {
         data.editing && dispatch({ type: "editing_save" });
@@ -23,7 +23,7 @@ const LiveTable = () => {
     useClickOutside(InputRef, fnEditionReset);
 
     return (
-        <div className={'grid grid-cols-21 grid-rows-3 w-full bg-white rounded'}>
+        <div className={`grid grid-cols-${nbViewItems + 1} grid-rows-3 w-full bg-white rounded`}>
             <div className="col-start-1 col-end-1 row-start-1 row-end-1 p-3 text-gray-600 border-r border-gray-300">Index</div>
             <div
                 className="col-start-1 col-end-1 row-start-2 row-end-2 p-3 border-t border-gray-300 text-gray-600 border-r border-gray-300">Value
@@ -34,7 +34,7 @@ const LiveTable = () => {
                 2
             </div>
             {eventsFiltered.map((event, idx) => (
-                <>
+                <Fragment key={event.index}>
                     <div className={cs(`col-start-${idx + 3} col-end-${idx + 3} row-start-1 row-end-1 text-gray-600 flex justify-center items-center`, {
                         "bg-purple-50": idx % 2 === 0
                     })}>{event.index}</div>
@@ -76,7 +76,7 @@ const LiveTable = () => {
                     <div className={cs(`col-start-${idx + 3} col-end-${idx + 3} row-start-3 row-end-3 text-gray-600 border-t border-gray-300 flex justify-center items-center`, {
                         "bg-purple-50": idx % 2 === 0
                     })}>{event.value2}</div>
-                </>
+                </Fragment>
             ))}
         </div>
     );

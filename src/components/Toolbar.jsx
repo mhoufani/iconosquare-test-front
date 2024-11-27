@@ -58,7 +58,7 @@ const Toolbar = () => {
                     );
                 }}
             >
-                <ForwardIcon className={cs("flex-1 size-5 text-violet-400", !data.navForwardEnabled && "text-violet-200" )} />
+                <ForwardIcon className={cs("flex-1 size-5", data.navForwardEnabled ? "text-violet-400" : "text-violet-200" )} />
             </button>
         </div>
     );
